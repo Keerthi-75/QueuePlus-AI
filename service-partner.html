@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Partner Portal | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Workspace access</p></div></a>
+    <nav class="nav-actions">
+      <a class="nav-link" href="index.html">Homepage</a>
+      <a class="nav-link" href="public-queue-finder.html">Public Queue Finder</a>
+      <a class="nav-link" href="location-manager.html">Locations</a><a class="nav-link" href="hardware-guide.html">Hardware Guide</a><a class="nav-link" href="database-setup.html">Database Setup</a>
+      <button class="outline-btn" id="exportDataButton" type="button">Export Demo Data</button>
+    </nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot"></span> Partner workspace</div>
+        <h2>Login or create <span>a service workspace.</span></h2>
+        <p>Manage locations, AI setup, devices, live status, and queue history.</p>
+        <div class="hero-actions segmented-control" role="tablist" aria-label="Authentication mode">
+          <button class="segmented-btn active" data-auth-tab="login" type="button">Login</button>
+          <button class="segmented-btn" data-auth-tab="register" type="button">Create Workspace</button>
+        </div>
+      </div>
+      <aside class="panel" data-reveal="right">
+        <div class="panel-head"><div><h3>Current mode</h3><p>Core setup path.</p></div><span class="status-pill info" id="authModeBadge">Login selected</span></div>
+        <div class="panel-body">
+          <div class="flow-rail">
+            <div class="flow-step"><div class="flow-index">1</div><div><strong>Authenticate</strong><p>Sign in or create a Service Partner workspace.</p></div><span class="status-pill online">Private</span></div>
+            <div class="flow-step"><div class="flow-index">2</div><div><strong>Survey config</strong><p>Saved values control queue calculations.</p></div><span class="status-pill warning">Required</span></div>
+            <div class="flow-step"><div class="flow-index">3</div><div><strong>Live hub</strong><p>Publish processed queue status.</p></div><span class="status-pill info">Public-safe</span></div>
+          </div>
+          <p class="helper" style="margin-top:16px;">Demo login: <strong>demo@queue.test</strong> / <strong>demo1234</strong></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section focus-workspace">
+      <article class="auth-card mode-panel" data-auth-panel="login">
+        <div class="panel-head"><div><h3>Login to Service Control</h3><p>Open your workspace.</p></div><span class="status-pill online">Existing Partner</span></div>
+        <form class="auth-body" id="loginForm" novalidate>
+          <div class="field"><label for="loginEmail">Official Email</label><input id="loginEmail" type="email" placeholder="partner@organization.com" autocomplete="email" /><div class="field-error" data-error-for="loginEmail"></div></div>
+          <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" placeholder="Enter password" autocomplete="current-password" /><div class="field-error" data-error-for="loginPassword"></div></div>
+          <div class="button-row" style="justify-content:space-between; margin-top:14px;"><button class="submit-btn" type="submit">Login to Hub</button><button class="outline-btn" id="useDemoButton" type="button">Use Demo Account</button></div>
+        </form>
+      </article>
+
+      <article class="auth-card mode-panel" data-auth-panel="register" hidden>
+        <div class="panel-head"><div><h3>Create Service Partner Workspace</h3><p>Create the first service location.</p></div><span class="status-pill warning">New Workspace</span></div>
+        <form class="auth-body" id="registerForm" novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="organizationName">Organization Name</label><input id="organizationName" type="text" placeholder="Municipal Office" /><div class="field-error" data-error-for="organizationName"></div></div>
+            <div class="field"><label for="organizationType">Organization Type</label><select id="organizationType"><option>Government Office</option><option>University Office</option><option>Hospital Registration</option><option>Bank Branch</option><option>Service Counter</option><option>Other Public Location</option></select><div class="field-error" data-error-for="organizationType"></div></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="serviceLocation">Service Location / Branch</label><input id="serviceLocation" type="text" placeholder="Main Branch, Jaffna" /><div class="field-error" data-error-for="serviceLocation"></div></div>
+            <div class="field"><label for="contactPerson">Contact Person</label><input id="contactPerson" type="text" placeholder="Officer in charge" /><div class="field-error" data-error-for="contactPerson"></div></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="contactNumber">Contact Number</label><input id="contactNumber" type="tel" placeholder="+94 ..." /><div class="field-error" data-error-for="contactNumber"></div></div>
+            <div class="field"><label for="registerEmail">Official Email</label><input id="registerEmail" type="email" placeholder="partner@organization.com" autocomplete="email" /><div class="field-error" data-error-for="registerEmail"></div></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="registerPassword">Password</label><input id="registerPassword" type="password" placeholder="Minimum 8 characters" autocomplete="new-password" /><div class="field-error" data-error-for="registerPassword"></div></div>
+            <div class="field"><label for="confirmPassword">Confirm Password</label><input id="confirmPassword" type="password" placeholder="Repeat password" autocomplete="new-password" /><div class="field-error" data-error-for="confirmPassword"></div></div>
+          </div>
+          <label class="check-card" style="margin-top:10px;"><div class="check-head"><strong>Enable public listing after setup</strong><input id="publicListing" type="checkbox" checked /></div><p class="helper">Public page shows processed status only.</p></label>
+          <div class="button-row" style="justify-content:space-between; margin-top:16px;"><button class="submit-btn" type="submit">Create and Continue</button><button class="outline-btn" id="backToLoginButton" type="button">Back to Login</button></div>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Service Partner Portal</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="service-partner.js"></script>
+</body>
+</html>

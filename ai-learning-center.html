@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Learning Center | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>AI Learning Center</p></div></a>
+    <nav class="nav-actions">
+      <a class="nav-link" href="ai-setup-center.html">AI Setup</a>
+      <a class="nav-link" href="service-control-hub.html">Control Hub</a>
+      <a class="nav-link" href="database-setup.html">Database</a>
+      <a class="nav-link" href="public-queue-finder.html">Public Finder</a>
+      <button class="outline-btn" id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot"></span> Queue learning</div>
+        <h2>Use history to improve <span>best visit predictions.</span></h2>
+        <p id="learningSummary">Loading learning data...</p>
+      </div>
+      <aside class="panel" data-reveal="right">
+        <div class="panel-head"><div><h3>Learning Status</h3><p id="sampleText">Waiting for history.</p></div><span class="status-pill info" id="learningBadge">Local</span></div>
+        <div class="panel-body">
+          <div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);">
+            <article class="metric-card"><span>Samples</span><strong id="sampleCount">0</strong><p>Saved queue snapshots.</p></article>
+            <article class="metric-card"><span>Today Avg</span><strong><span id="todayAvgWait">0</span>m</strong><p>Visible trend.</p></article>
+            <article class="metric-card"><span>Best Hour</span><strong id="bestHourText">--</strong><p>Lowest historic wait.</p></article>
+            <article class="metric-card"><span>Peak Hour</span><strong id="peakHourText">--</strong><p>Highest historic wait.</p></article>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section grid-2">
+      <article class="panel">
+        <div class="panel-head"><div><h3>Prediction Accuracy</h3><p>Compare predicted and actual wait.</p></div><span class="status-pill warning" id="accuracyBadge">No feedback</span></div>
+        <div class="panel-body">
+          <div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);">
+            <article class="metric-card"><span>Accuracy</span><strong id="accuracyScore">--</strong><p id="accuracyText">Add feedback to calculate.</p></article>
+            <article class="metric-card"><span>Average Error</span><strong id="avgError">--</strong><p>Minutes difference.</p></article>
+          </div>
+          <div class="form-grid" style="margin-top:16px;">
+            <div class="field"><label for="predictedWaitInput">Predicted wait</label><input id="predictedWaitInput" type="number" min="0" max="240" placeholder="Minutes" /></div>
+            <div class="field"><label for="actualWaitInput">Actual wait</label><input id="actualWaitInput" type="number" min="0" max="240" placeholder="Minutes" /></div>
+          </div>
+          <div class="button-row" style="margin-top:16px;"><button class="primary-btn" id="saveFeedbackButton" type="button">Save Feedback</button><button class="outline-btn" id="clearFeedbackButton" type="button">Clear Feedback</button></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h3>History Summary</h3><p>Used for public best-visit advice.</p></div><button class="outline-btn" id="refreshLearningButton" type="button">Refresh</button></div>
+        <div class="panel-body">
+          <div class="step-list" id="historyList"></div>
+          <div class="empty-state" id="emptyHistory">No queue history yet. Start the Control Hub and save public status.</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>AI Learning Center</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="ai-learning-center.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Location Manager | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Location Manager</p></div></a>
+    <nav class="nav-actions"><a class="nav-link" href="setup-survey.html">Setup Survey</a><a class="nav-link" href="ai-setup-center.html">AI Setup</a><a class="nav-link" href="device-registration.html">Device</a><a class="nav-link" href="database-setup.html">Database</a><a class="nav-link" href="service-control-hub.html">Control Hub</a><button class="outline-btn" id="logoutBtn" type="button">Logout</button></nav>
+  </header>
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal><div class="eyebrow"><span class="pulse-dot"></span> Locations</div><h2>Manage branches. <span>Select one active location.</span></h2><p>Each branch keeps its own setup, devices, AI zone, history, and public status.</p></div>
+      <aside class="panel" data-reveal="right"><div class="panel-head"><div><h3>Active location</h3><p id="activeLocationText">Loading...</p></div><span class="status-pill info" id="locationCountBadge">0 locations</span></div><div class="panel-body"><p class="helper">Setup, devices, AI, and hub use this active location.</p><div class="button-row" style="margin-top:16px;"><a class="primary-btn" href="setup-survey.html">Configure Location</a><a class="outline-btn" href="device-registration.html">Register Device</a></div></div></aside>
+    </section>
+    <section class="section grid-2">
+      <article class="panel"><div class="panel-head"><div><h3>Create another service location</h3><p>Add another branch or counter.</p></div><span class="status-pill online">Workspace</span></div><div class="panel-body"><form id="locationForm" novalidate><div class="form-grid"><div class="field"><label for="organizationName">Organization Name</label><input id="organizationName" placeholder="Municipal Office" /></div><div class="field"><label for="organizationType">Organization Type</label><select id="organizationType"><option>Government Office</option><option>University Office</option><option>Hospital Registration</option><option>Bank Branch</option><option>Service Counter</option><option>Other Public Location</option></select></div></div><div class="form-grid" style="margin-top:14px;"><div class="field"><label for="serviceLocation">Service Location / Branch</label><input id="serviceLocation" placeholder="North Branch, Jaffna" /></div><div class="field"><label for="contactNumber">Contact Number</label><input id="contactNumber" placeholder="+94 ..." /></div></div><div class="button-row" style="margin-top:16px;"><button class="submit-btn" type="submit">Create Location</button></div></form></div></article>
+      <article class="panel"><div class="panel-head"><div><h3>Your locations</h3><p>Select one active branch at a time.</p></div><button class="outline-btn" id="refreshLocationsButton" type="button">Refresh</button></div><div class="panel-body"><div class="location-grid" id="locationList"></div><div class="empty-state" id="emptyLocations">No locations found.</div></div></article>
+    </section>
+  </main>
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Location Manager · Locations</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script><script src="storage-api.js"></script><script src="app-ui.js"></script><script src="location-manager.js"></script>
+</body>
+</html>

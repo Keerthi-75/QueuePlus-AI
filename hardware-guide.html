@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hardware Guide | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <header class="nav shell">
+    <a class="brand" href="index.html">
+      <img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" />
+      <div>
+        <h1>QueuePulse AI</h1><p>Hardware Guide</p>
+      </div>
+    </a>
+    <nav class="nav-actions">
+      <a class="nav-link" href="service-partner.html">Service Partner Portal</a>
+      <a class="nav-link" href="device-registration.html">Device Registration</a>
+      <a class="nav-link" href="database-setup.html">Database Setup</a>
+      <a class="nav-link" href="service-control-hub.html">Service Control Hub</a>
+    </nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card">
+        <div class="eyebrow"><span class="pulse-dot"></span> Hardware setup</div>
+        <h2>Connect the camera and ESP32 correctly before publishing live queue data.</h2>
+        <p>
+          This guide covers the webcam, ESP32, IR sensors, ultrasonic sensor, Arduino upload, cloud push and final testing flow.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="device-registration.html">Generate ESP32 Code</a>
+          <a class="outline-btn" href="database-setup.html">Database Setup</a>
+          <a class="outline-btn" href="ai-setup-center.html">Open AI Setup Center</a>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Setup order</h3>
+            <p>Follow this order to avoid connection problems.</p>
+          </div>
+          <span class="status-pill warning">Important</span>
+        </div>
+        <div class="panel-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot">1</div><div><h4>Complete Setup Survey</h4><p>Save active counters, average service time, capacity and mode.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">2</div><div><h4>Register ESP32</h4><p>Create a device token and generate the Arduino sketch.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">3</div><div><h4>Wire sensors</h4><p>Connect IR entry, IR exit and ultrasonic pins before upload.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">4</div><div><h4>Upload code</h4><p>Use Arduino IDE once, then power the ESP32 using USB.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">5</div><div><h4>Calibrate camera</h4><p>Open AI Setup Center and save the queue zone.</p></div></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Required hardware</h3>
+          <p>Minimum parts for the working public model.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="metrics-grid">
+          <article class="metric-card"><span>Microcontroller</span><strong>ESP32</strong><p>Wi-Fi enabled board with USB cable.</p></article>
+          <article class="metric-card"><span>Entry sensor</span><strong>IR Sensor</strong><p>Detects people entering the queue area.</p></article>
+          <article class="metric-card"><span>Exit/service sensor</span><strong>IR Sensor</strong><p>Detects service completion or queue exit.</p></article>
+          <article class="metric-card"><span>Queue distance</span><strong>Ultrasonic</strong><p>Measures object distance or zone occupancy.</p></article>
+          <article class="metric-card"><span>Vision device</span><strong>Webcam</strong><p>Laptop webcam or external USB webcam.</p></article>
+          <article class="metric-card"><span>Power</span><strong>USB 5V</strong><p>Power from laptop, adapter or power bank.</p></article>
+          <article class="metric-card"><span>Wiring</span><strong>Jumpers</strong><p>Female-to-female or breadboard jumpers.</p></article>
+          <article class="metric-card"><span>Software</span><strong>Arduino IDE</strong><p>Used to upload the generated ESP32 sketch.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>1. ESP32 preparation</h3>
+            <p>Prepare the board before wiring and upload.</p>
+          </div>
+          <span class="status-pill online">ESP32</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Checklist:
+1. Connect ESP32 to the computer using a data-capable USB cable.
+2. Open Arduino IDE.
+3. Install/select ESP32 board support.
+4. Select the correct board type.
+5. Select the correct COM port.
+6. Keep Serial Monitor ready at 115200 baud.
+7. Do not disconnect during upload.
+8. After upload, ESP32 can be powered from USB adapter or power bank.</div>
+          <p class="helper" style="margin-top:14px;">If Arduino IDE shows no port, try another USB cable. Some cables are power-only and cannot upload code.</p>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>2. Pin rules</h3>
+            <p>Use stable GPIO pins for sensors.</p>
+          </div>
+          <span class="status-pill warning">Do carefully</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Recommended pins:
+IR Entry OUT  -> GPIO 27
+IR Exit OUT   -> GPIO 26
+Ultrasonic TRIG -> GPIO 25
+Ultrasonic ECHO -> GPIO 34
+IR VCC        -> 3V3
+IR GND        -> GND
+ESP32 Power   -> USB 5V</div>
+          <p class="helper" style="margin-top:14px;">If your board does not show GPIO 27, look for IO27, D27 or G27. If unavailable, choose another free GPIO and update the same pin in Device Registration.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>IR sensor wiring</h3>
+          <p>Use one IR sensor for entry and one for exit/service detection.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="step-item">
+            <div class="step-index">A</div>
+            <div><h4>Entry IR sensor</h4><p>Place it near the queue entrance. When someone passes, the ESP32 records an arrival event.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">B</div>
+            <div><h4>Exit/service IR sensor</h4><p>Place it near the service exit or counter path. When someone leaves, the ESP32 records a service/exit event.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">C</div>
+            <div><h4>Sensor alignment</h4><p>Point the sensor at the crossing path. Avoid direct sunlight, reflective glass and moving fans.</p></div>
+          </article>
+        </div>
+
+        <div class="terminal" style="margin-top:18px;">IR Entry Sensor:
+VCC  -> ESP32 3V3
+GND  -> ESP32 GND
+OUT  -> ESP32 GPIO 27
+
+IR Exit Sensor:
+VCC  -> ESP32 3V3
+GND  -> ESP32 GND
+OUT  -> ESP32 GPIO 26</div>
+
+        <p class="helper" style="margin-top:14px;">Most IR obstacle sensors work with 3.3V or 5V, but ESP32 input pins are 3.3V logic. Use 3V3 when possible.</p>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Ultrasonic sensor wiring</h3>
+            <p>Use it for queue-zone distance or occupancy support.</p>
+          </div>
+          <span class="status-pill warning">Echo warning</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">HC-SR04 style ultrasonic sensor:
+VCC   -> 5V / VIN
+GND   -> GND
+TRIG  -> GPIO 25
+ECHO  -> GPIO 34 through voltage divider if ECHO outputs 5V</div>
+          <p class="helper" style="margin-top:14px;">The ESP32 GPIO input is 3.3V. If the ultrasonic ECHO pin outputs 5V, do not connect ECHO directly to ESP32. Use a voltage divider or level shifter.</p>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Simple voltage divider</h3>
+            <p>Protect ESP32 ECHO input.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Example divider for ECHO:
+Ultrasonic ECHO -> 1k resistor -> ESP32 GPIO 34
+ESP32 GPIO 34   -> 2k resistor -> GND
+
+This reduces a 5V ECHO signal to about 3.3V.</div>
+          <p class="helper" style="margin-top:14px;">Use nearby resistor values if needed, but keep the output near 3.3V.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Full wiring summary</h3>
+          <p>Use these values in the Device Registration code builder.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="metrics-grid">
+          <article class="metric-card"><span>IR Entry VCC</span><strong>3V3</strong><p>Power for entry sensor.</p></article>
+          <article class="metric-card"><span>IR Entry GND</span><strong>GND</strong><p>Common ground.</p></article>
+          <article class="metric-card"><span>IR Entry OUT</span><strong>GPIO 27</strong><p>Arrival trigger.</p></article>
+          <article class="metric-card"><span>IR Exit VCC</span><strong>3V3</strong><p>Power for exit sensor.</p></article>
+          <article class="metric-card"><span>IR Exit GND</span><strong>GND</strong><p>Common ground.</p></article>
+          <article class="metric-card"><span>IR Exit OUT</span><strong>GPIO 26</strong><p>Service/exit trigger.</p></article>
+          <article class="metric-card"><span>Ultrasonic VCC</span><strong>5V / VIN</strong><p>Check your sensor model.</p></article>
+          <article class="metric-card"><span>Ultrasonic GND</span><strong>GND</strong><p>Same ESP32 ground.</p></article>
+          <article class="metric-card"><span>Ultrasonic TRIG</span><strong>GPIO 25</strong><p>Output from ESP32.</p></article>
+          <article class="metric-card"><span>Ultrasonic ECHO</span><strong>GPIO 34</strong><p>Input-only pin. Use voltage protection if ECHO is 5V.</p></article>
+          <article class="metric-card"><span>ESP32 Upload</span><strong>USB</strong><p>Computer connection.</p></article>
+          <article class="metric-card"><span>ESP32 Runtime</span><strong>USB Power</strong><p>Adapter or power bank after upload.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>3. Generate and upload ESP32 code</h3>
+            <p>Use the code builder so the device token and cloud URL are included correctly.</p>
+          </div>
+          <span class="status-pill online">Cloud push</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Device Registration steps:
+1. Open device-registration.html.
+2. Create or select the Service Location.
+3. Register a new ESP32 device.
+4. Copy or generate the device token.
+5. Open the automatic code builder.
+6. Enter Wi-Fi SSID and Wi-Fi password.
+7. Enter Supabase Edge Function URL.
+8. Enter the device token.
+9. Confirm sensor pins.
+10. Set ultrasonic threshold.
+11. Set cloud push interval.
+12. Download the .ino file.
+13. Open it in Arduino IDE.
+14. Upload to ESP32.</div>
+          <p class="helper" style="margin-top:14px;">After upload, open Serial Monitor. You should see Wi-Fi connection, IP address and cloud push status.</p>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Serial Monitor checks</h3>
+            <p>Use this to confirm the board is working.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Expected messages:
+Starting WiFi connection...
+SSID: your_wifi_name
+WiFi connected
+IP address: 192.168.x.x
+Sensor readings active
+Cloud push HTTP status: 200 / 201 / 204
+
+Problem messages:
+WiFi connection failed
+HTTP error
+Device token invalid
+Sensor reading invalid</div>
+          <p class="helper" style="margin-top:14px;">If cloud push fails, check function URL, token, Wi-Fi, Supabase Edge Function deployment and JWT verification setting.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Webcam setup</h3>
+          <p>Camera accuracy depends heavily on placement and calibration.</p>
+        </div>
+        <span class="status-pill online">AI Vision</span>
+      </div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="step-item">
+            <div class="step-index">1</div>
+            <div><h4>Connect camera</h4><p>Use laptop webcam or plug in an external USB webcam before opening the Service Control Hub.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">2</div>
+            <div><h4>Allow permission</h4><p>Browser webcam AI only starts after camera permission is allowed.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">3</div>
+            <div><h4>Select device</h4><p>If an external webcam is connected, select it from the camera device list.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">4</div>
+            <div><h4>Set angle</h4><p>Use front-diagonal or top-diagonal angle. Avoid a full side angle.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">5</div>
+            <div><h4>Draw queue zone</h4><p>Open AI Setup Center and save the area where people should be counted.</p></div>
+          </article>
+          <article class="step-item">
+            <div class="step-index">6</div>
+            <div><h4>Test stability</h4><p>Stand in the queue zone and confirm count, confidence and wait time update correctly.</p></div>
+          </article>
+        </div>
+
+        <div class="terminal" style="margin-top:18px;">Best camera placement:
+- Above normal head level
+- Looking at the queue from the front or top-diagonal
+- Full queue path visible
+- Counter/staff area outside the queue zone
+- No mirrors, posters, TV screens or phone screens in the queue zone
+- Stable lighting
+- Camera fixed firmly without shaking</div>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>4. Final system test</h3>
+            <p>Test each source before publishing public status.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Test flow:
+1. Open Service Control Hub.
+2. Start AI Camera.
+3. Confirm raw camera count changes when people stand in the queue zone.
+4. Pass hand/object in front of entry IR sensor.
+5. Confirm entry reading changes.
+6. Pass hand/object in front of exit IR sensor.
+7. Confirm exit/service reading changes.
+8. Place object in ultrasonic range.
+9. Confirm distance value changes.
+10. Check final people count.
+11. Check estimated wait time.
+12. Open Public Queue Finder.
+13. Confirm only public-safe status is shown.</div>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Publishing rule</h3>
+            <p>Do not publish unreliable setup.</p>
+          </div>
+          <span class="status-pill warning">Quality check</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal">Publish only when:
+- Setup Survey is completed
+- ESP32 device is registered
+- Sensor pins match generated code
+- ESP32 cloud push is active
+- Camera permission works
+- Queue zone is saved
+- AI readiness is acceptable
+- Public Queue Finder shows fresh data</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Troubleshooting</h3>
+          <p>Common hardware problems and fixes.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="step-item"><div class="step-index">Wi</div><div><h4>Wi-Fi fails</h4><p>Check SSID, password, 2.4 GHz support, signal strength and special characters in the password.</p></div></article>
+          <article class="step-item"><div class="step-index">USB</div><div><h4>No board/port</h4><p>Use a data USB cable, install board support, select correct COM port and press BOOT during upload if required.</p></div></article>
+          <article class="step-item"><div class="step-index">IR</div><div><h4>IR always triggered</h4><p>Adjust the onboard sensitivity screw, reduce sunlight/reflection and check OUT pin mode in code builder.</p></div></article>
+          <article class="step-item"><div class="step-index">US</div><div><h4>Ultrasonic invalid</h4><p>Check TRIG/ECHO pins, common ground, voltage divider and threshold distance.</p></div></article>
+          <article class="step-item"><div class="step-index">AI</div><div><h4>Camera count wrong</h4><p>Move camera to front/top-diagonal angle, redraw queue zone and remove posters/screens from the frame.</p></div></article>
+          <article class="step-item"><div class="step-index">CL</div><div><h4>Cloud not updating</h4><p>Check Supabase function URL, device token, Edge Function status and Serial Monitor HTTP response.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Safety notes</h3>
+          <p>Protect the ESP32 and sensors during testing.</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="terminal">Do:
+- Power the ESP32 through USB.
+- Use common GND for all sensors.
+- Keep ESP32 input pins at 3.3V logic.
+- Secure loose wires before demonstration.
+- Upload code before final mounting.
+
+Do not:
+- Connect 5V directly to ESP32 GPIO pins.
+- Short 3V3 and GND.
+- Remove USB during upload.
+- Place sensors where people can kick or pull wires.
+- Expose bare wires during public demonstration.</div>
+      </div>
+    </section>
+
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>ESP32 connection accuracy checklist</h3>
+          <p>Use this before blaming the code.</p>
+        </div>
+        <span class="status-pill warning">Must check</span>
+      </div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="step-item"><div class="step-index">1</div><div><h4>Board package</h4><p>Install ESP32 board support in Arduino IDE, then select the correct ESP32 board and COM port.</p></div></article>
+          <article class="step-item"><div class="step-index">2</div><div><h4>Data cable</h4><p>Use a USB data cable. A charging-only cable powers the board but cannot upload.</p></div></article>
+          <article class="step-item"><div class="step-index">3</div><div><h4>Wi‑Fi band</h4><p>Use the router’s 2.4 GHz SSID. Keep the ESP32 close to the router during testing.</p></div></article>
+          <article class="step-item"><div class="step-index">4</div><div><h4>Safe pins</h4><p>Use GPIO 27, 26, 25 and 34 unless your board layout requires different safe pins.</p></div></article>
+          <article class="step-item"><div class="step-index">5</div><div><h4>Database first</h4><p>Run the database schema and deploy the Edge Function before expecting cloud push to work.</p></div></article>
+          <article class="step-item"><div class="step-index">6</div><div><h4>Serial Monitor</h4><p>Use 115200 baud and read the exact Wi‑Fi/cloud message after reset.</p></div></article>
+        </div>
+        <div class="terminal" style="margin-top:18px;">Success output should include:
+ESP32 connected to Wi‑Fi.
+IP address: 192.168.x.x
+Cloud push code: 200 or 201
+Cloud push OK. Database should update shortly.</div>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head">
+        <div>
+          <h3>Database connection requirement</h3>
+          <p>The ESP32 does not write directly to public tables.</p>
+        </div>
+        <a class="outline-btn" href="database-setup.html">Open Full Database Setup</a>
+      </div>
+      <div class="panel-body">
+        <div class="terminal">Required database flow:
+1. Create Supabase project.
+2. Run supabase_schema.sql once.
+3. Deploy supabase/functions/device-ingest.
+4. Disable JWT verification for device-ingest.
+5. Add Supabase URL and anon key in app-config.js.
+6. Register ESP32 in Device Registration.
+7. Generate the Arduino sketch with the correct function URL and token.
+8. Upload and check Serial Monitor.</div>
+        <p class="helper" style="margin-top:14px;">If Serial Monitor shows Cloud push code 401 or 403, the token is wrong or the device is inactive. If it shows 500, check the Edge Function logs and make sure the SQL schema was run.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 QueuePulse AI. All rights reserved.</span>
+    <span>Hardware Guide</span>
+  </footer>
+</body>
+</html>

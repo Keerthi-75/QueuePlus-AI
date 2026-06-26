@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Survey | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Setup Survey</p></div></a>
+    <nav class="nav-actions"><a class="nav-link" href="service-partner.html">Partner Portal</a><a class="nav-link" href="location-manager.html">Locations</a><a class="nav-link" href="ai-setup-center.html">AI Setup</a><a class="nav-link" href="device-registration.html">Device</a><a class="nav-link" href="database-setup.html">Database</a><a class="nav-link" href="hardware-guide.html">Hardware</a><button class="outline-btn" id="logoutBtn" type="button">Logout</button></nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot"></span> Location configuration</div>
+        <h2>Set the <span>queue calculation rules.</span></h2>
+        <p>Save the values used by AI, ESP32 fusion, and public status.</p>
+      </div>
+      <aside class="panel" data-reveal="right">
+        <div class="panel-head"><div><h3 id="partnerName">Checking...</h3><p id="partnerLocation">Loading service location.</p></div><span class="status-pill online">Active</span></div>
+        <div class="panel-body"><div class="progress-bar-shell"><div id="wizardProgressFill" class="progress-bar-fill"></div></div><div class="wizard-progress-label"><span id="wizardStepLabel">Step 1 of 4</span><strong id="wizardPercent">25%</strong></div></div>
+      </aside>
+    </section>
+
+    <section class="section wizard-shell">
+      <form id="surveyForm" class="wizard-board" novalidate>
+        <aside class="wizard-sidebar">
+          <span class="status-pill info" id="activeSurveyBadge">Structure</span>
+          <h3 id="activeSurveyTitle" style="margin-top:14px;">1. Queue Layout</h3>
+          <p id="activeSurveySubtitle" class="helper" style="margin-top:8px;">Describe how people enter, wait and leave.</p>
+          <div class="wizard-stepper" role="tablist" aria-label="Setup survey steps">
+            <button class="wizard-step-btn active" data-survey-step="0" type="button"><span class="step-number">1</span><span>Queue Layout</span></button>
+            <button class="wizard-step-btn" data-survey-step="1" type="button"><span class="step-number">2</span><span>Device Capability</span></button>
+            <button class="wizard-step-btn" data-survey-step="2" type="button"><span class="step-number">3</span><span>Prediction Learning</span></button>
+            <button class="wizard-step-btn" data-survey-step="3" type="button"><span class="step-number">4</span><span>Public Visibility</span></button>
+          </div>
+          <div class="single-panel-note">These values control count, wait time, and confidence.</div>
+        </aside>
+
+        <div class="survey-card">
+          <div class="survey-body">
+            <section class="wizard-step" data-step-panel="0">
+              <div class="card-head"><div><h3>Queue Layout</h3><p>Basic queue structure.</p></div><span class="status-pill online">Step 1</span></div>
+              <div class="card-body">
+                <div class="form-grid three">
+                  <div class="field"><label for="entranceCount">Visitor Entrances</label><input id="entranceCount" type="number" min="1" value="1" /><div class="field-error" data-error-for="entranceCount"></div></div>
+                  <div class="field"><label for="exitCount">Visitor Exits / Served Path</label><input id="exitCount" type="number" min="1" value="1" /><div class="field-error" data-error-for="exitCount"></div></div>
+                  <div class="field"><label for="queueLayout">Queue Layout</label><select id="queueLayout"><option>Single queue to multiple counters</option><option>Multiple queues</option><option>Token-based waiting area</option><option>Open waiting area</option></select><div class="field-error" data-error-for="queueLayout"></div></div>
+                </div>
+                <div class="form-grid three" style="margin-top:18px;"><label class="check-card"><div class="check-head"><strong>Stable Wi-Fi available</strong><input id="hasWifi" type="checkbox" checked /></div><p class="helper">Needed for devices.</p></label><label class="check-card"><div class="check-head"><strong>Power supply near queue</strong><input id="hasPowerSupply" type="checkbox" checked /></div><p class="helper">Needed for devices and camera.</p></label><label class="check-card"><div class="check-head"><strong>Good lighting</strong><input id="hasGoodLighting" type="checkbox" checked /></div><p class="helper">Improves AI detection.</p></label></div>
+              </div>
+            </section>
+
+            <section class="wizard-step" data-step-panel="1" hidden>
+              <div class="card-head"><div><h3>Device Capability</h3><p>Choose the data sources.</p></div><span class="status-pill info">Step 2</span></div>
+              <div class="card-body">
+                <div class="form-grid">
+                  <label class="check-card"><div class="check-head"><strong>Use Browser Webcam AI</strong><input id="usesWebcamAi" type="checkbox" checked /></div><p class="helper">Detects queue-zone people.</p></label>
+                  <label class="check-card"><div class="check-head"><strong>Use ESP32 Device</strong><input id="usesEsp32" type="checkbox" checked /></div><p class="helper">Adds entry and service-complete readings.</p></label>
+                  <label class="check-card"><div class="check-head"><strong>Use Ultrasonic Sensor</strong><input id="usesUltrasonic" type="checkbox" /></div><p class="helper">Enable only if your ESP32 has ultrasonic wiring.</p></label>
+                  <label class="check-card"><div class="check-head"><strong>No public video feed</strong><input id="noVideoStorage" type="checkbox" checked /></div><p class="helper">Only processed status is public.</p></label>
+                  <label class="check-card"><div class="check-head"><strong>Camera privacy confirmed</strong><input id="cameraPrivacyConfirmed" type="checkbox" checked /></div><p class="helper">Avoid private areas.</p></label>
+                </div>
+                <div class="field" style="margin-top:16px;"><label for="cameraPosition">Camera Position Plan</label><textarea id="cameraPosition" placeholder="Example: Webcam mounted above the counter facing the waiting line."></textarea><div class="field-error" data-error-for="cameraPosition"></div></div>
+                <div class="field" style="margin-top:16px;"><label for="esp32PinPlan">ESP32 Pin / Sensor Plan</label><textarea id="esp32PinPlan" placeholder="Example: IR Entry GPIO27, IR Exit GPIO26. Add ultrasonic pins only if enabled."></textarea><div class="field-error" data-error-for="esp32PinPlan"></div></div>
+              </div>
+            </section>
+
+            <section class="wizard-step" data-step-panel="2" hidden>
+              <div class="card-head"><div><h3>Prediction Learning</h3><p>The system learns service speed from the first 8 served visitors each day.</p></div><span class="status-pill warning">Step 3</span></div>
+              <div class="card-body">
+                <div class="form-grid three">
+                  <div class="field"><label for="activeCounters">Active Service Counters</label><input id="activeCounters" type="number" min="1" value="2" /><div class="field-error" data-error-for="activeCounters"></div></div>
+                  <div class="field"><label for="dailyLearningSampleCount">Daily Learning Samples</label><input id="dailyLearningSampleCount" type="number" min="7" max="8" value="8" /><div class="field-error" data-error-for="dailyLearningSampleCount"></div></div>
+                  <div class="field"><label for="noWaitQueueLimit">No-Wait Queue Limit</label><input id="noWaitQueueLimit" type="number" min="1" value="8" /><div class="field-error" data-error-for="noWaitQueueLimit"></div></div>
+                  <div class="field"><label for="maxQueueCapacity">Max Queue Capacity</label><input id="maxQueueCapacity" type="number" min="5" value="30" /><div class="field-error" data-error-for="maxQueueCapacity"></div></div>
+                  <div class="field"><label for="mediumCrowdLimit">Busy Queue Limit</label><input id="mediumCrowdLimit" type="number" min="9" value="15" /><div class="field-error" data-error-for="mediumCrowdLimit"></div></div>
+                </div>
+                <p class="helper" style="margin-top:16px;">If the queue is at or below the no-wait limit, visitors see “You can visit now.” For larger queues, wait time starts only after the system has learned today’s service speed.</p>
+              </div>
+            </section>
+
+            <section class="wizard-step" data-step-panel="3" hidden>
+              <div class="card-head"><div><h3>Public Visibility</h3><p>Public status settings.</p></div><span class="status-pill online">Step 4</span></div>
+              <div class="card-body">
+                <div class="form-grid"><label class="check-card"><div class="check-head"><strong>Activate public listing</strong><input id="isPublic" type="checkbox" checked /></div><p class="helper">Show in Public Finder.</p></label><label class="check-card"><div class="check-head"><strong>Location Open</strong><input id="isOpen" type="checkbox" checked /></div><p class="helper">When enabled, AI predicts wait time and publishes this location as open.</p></label></div>
+                <div class="form-grid" style="margin-top:16px;">
+                  <label class="check-card"><div class="check-head"><strong>Use office schedule automation</strong><input id="scheduleEnabled" type="checkbox" checked /></div><p class="helper">Shows schedule notes, but Location Open controls live prediction.</p></label>
+                  <div class="field"><label for="timezone">Timezone</label><select id="timezone"><option value="Asia/Colombo">Asia/Colombo</option><option value="UTC">UTC</option></select><div class="field-error" data-error-for="timezone"></div></div>
+                </div>
+                <div class="form-grid" style="margin-top:16px;">
+                  <div class="field"><label for="openingTime">Opening Time</label><input id="openingTime" type="time" value="08:30" /><div class="field-error" data-error-for="openingTime"></div></div>
+                  <div class="field"><label for="closingTime">Closing Time</label><input id="closingTime" type="time" value="16:30" /><div class="field-error" data-error-for="closingTime"></div></div>
+                </div>
+                <div class="field" style="margin-top:16px;"><label>Closed Days</label><div class="toolbar" id="closedDaysGroup">
+                  <label class="filter-btn"><input id="closedSunday" type="checkbox" value="Sunday" checked /> Sunday</label>
+                  <label class="filter-btn"><input id="closedMonday" type="checkbox" value="Monday" /> Monday</label>
+                  <label class="filter-btn"><input id="closedTuesday" type="checkbox" value="Tuesday" /> Tuesday</label>
+                  <label class="filter-btn"><input id="closedWednesday" type="checkbox" value="Wednesday" /> Wednesday</label>
+                  <label class="filter-btn"><input id="closedThursday" type="checkbox" value="Thursday" /> Thursday</label>
+                  <label class="filter-btn"><input id="closedFriday" type="checkbox" value="Friday" /> Friday</label>
+                  <label class="filter-btn"><input id="closedSaturday" type="checkbox" value="Saturday" /> Saturday</label>
+                </div><p class="helper">Used by the hub and public page.</p></div>
+                <div class="field" style="margin-top:16px;"><label for="deploymentNotes">Deployment Notes</label><textarea id="deploymentNotes" placeholder="Example: public listing enabled after camera testing; ESP32 near entrance."></textarea><div class="field-error" data-error-for="deploymentNotes"></div></div>
+              </div>
+            </section>
+
+            <div class="wizard-actions"><button class="outline-btn" id="prevSurveyStep" type="button">Previous</button><div class="button-row"><button class="outline-btn" id="nextSurveyStep" type="button">Next Step</button><button class="submit-btn" id="submitSurveyButton" type="submit" hidden>Save Setup and Open Hub</button></div></div>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Setup Survey · Saved configuration · One visible step</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="setup-survey.js"></script>
+</body>
+</html>

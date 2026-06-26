@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Registration | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Device Registration</p></div></a>
+    <nav class="nav-actions"><a class="nav-link" href="service-control-hub.html">Service Control Hub</a><a class="nav-link" href="setup-survey.html">Setup Survey</a><a class="nav-link" href="hardware-guide.html">Hardware Guide</a><a class="nav-link" href="database-setup.html">Database Setup</a><button class="outline-btn" id="logoutBtn" type="button">Logout</button></nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot"></span> ESP32 public connection</div>
+        <h2>Register ESP32. <span>Generate Arduino code.</span></h2>
+        <p>Enter Wi‑Fi, token, endpoint, and safe pin values. The generated sketch now uses the full reliable ESP32 code from the project folder.</p>
+        <div class="badge-row"><span class="badge">One panel at a time</span><span class="badge">Full reliable code builder</span><span class="badge">Safe GPIO validation</span><span class="badge">Serial diagnostics</span><span class="badge">Cloud queue sync</span></div>
+      </div>
+      <aside class="professional-frame" data-reveal="right">
+        <div class="panel-head" style="padding:0 0 18px; border:0;"><div><h3>Deployment state</h3><p>Board sends readings after upload.</p></div><span class="status-pill info" id="modeBadge">Checking</span></div>
+        <div class="metrics-grid" style="grid-template-columns:1fr;">
+          <article class="metric-card compact"><span>Partner</span><strong id="partnerName">--</strong><p id="partnerLocation">--</p></article>
+          <article class="metric-card compact"><span>Cloud ingest endpoint</span><strong id="ingestUrl" style="font-size:15px; word-break:break-all;">--</strong><p>Used in generated code.</p></article>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section device-focus-layout" data-reveal>
+      <aside class="device-side-menu">
+        <span class="status-pill online">ESP32 Provisioning</span>
+        <h3 style="margin-top:16px;">Device setup flow</h3>
+        <p class="helper" style="margin-top:8px;">Register, generate, upload, verify.</p>
+        <div class="workspace-tabs vertical" role="tablist" aria-label="Device registration sections">
+          <button class="workspace-tab active" type="button" data-device-tab="register">1. Register ESP32</button>
+          <button class="workspace-tab" type="button" data-device-tab="builder">2. Auto Code Builder</button>
+          <button class="workspace-tab" type="button" data-device-tab="devices">3. Registered Devices</button>
+          <button class="workspace-tab" type="button" data-device-tab="cloud">4. Upload + Verify</button>
+        </div>
+        <div class="single-panel-note">Generate the sketch here. Upload it once using Arduino IDE.</div>
+      </aside>
+
+      <div>
+        <article class="panel workspace-panel" data-device-panel="register">
+          <div class="panel-head"><div><h3>Register ESP32 device</h3><p>Create one device identity.</p></div><span class="status-pill online">Secure</span></div>
+          <div class="panel-body">
+            <form id="deviceForm" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="deviceName">Device Name</label><input id="deviceName" type="text" value="ESP32 Queue Device" /></div>
+                <div class="field"><label for="deviceType">Device Type</label><select id="deviceType"><option value="esp32-ir-only">ESP32 + IR only</option><option value="esp32-ir-ultrasonic">ESP32 + IR + Ultrasonic</option></select></div>
+              </div>
+              <div class="field" style="margin-top:14px;"><label for="deviceId">ESP32 Device ID</label><input id="deviceId" type="text" placeholder="Optional. Example: ESP32-1234ABCD" /><p class="helper">Optional board ID.</p></div>
+              <div class="button-row" style="margin-top:16px;"><button class="primary-btn" type="submit">Generate Device Token</button><button class="outline-btn" id="openBuilderPanelButton" type="button">Open Code Builder</button></div>
+            </form>
+            <p class="single-panel-note">Token is filled into the builder.</p>
+          </div>
+        </article>
+
+        <article class="panel workspace-panel" data-device-panel="builder" hidden>
+          <div class="panel-head"><div><h3>Reliable Arduino code builder</h3><p>Generates the full working ESP32 sketch, not a simplified sample.</p></div><span class="status-pill warning">Upload once</span></div>
+          <div class="panel-body">
+            <div class="metric-card compact" id="tokenPanel" style="display:none; margin-bottom:14px;">
+              <span>Generated Device Token</span>
+              <strong id="deviceToken" style="font-size:14px; word-break:break-all; user-select:all;">--</strong>
+              <p>Inserted into Arduino code.</p>
+            </div>
+            <div class="empty-state" id="emptyTokenState" style="display:block; margin-bottom:14px;">No token generated yet. You may register the device first or paste an existing token below.</div>
+
+            <form id="codeBuilderForm" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="wifiSsid">Wi‑Fi name / SSID</label><input id="wifiSsid" type="text" placeholder="Example: SLTFIBER" autocomplete="off" /></div>
+                <div class="field"><label for="wifiPassword">Wi‑Fi password</label><input id="wifiPassword" type="password" placeholder="Enter Wi‑Fi password" autocomplete="new-password" /></div>
+              </div>
+              <div class="form-grid" style="margin-top:14px;">
+                <div class="field"><label for="builderIngestUrl">Cloud ingest URL</label><input id="builderIngestUrl" type="url" placeholder="https://your-cloud-ingest-url" /></div>
+                <div class="field"><label for="builderToken">Device token</label><input id="builderToken" type="text" placeholder="Generated device token" /></div>
+              </div>
+              <div class="form-grid three" style="margin-top:14px;">
+                <div class="field"><label for="pinEntry">IR Entry GPIO</label><input id="pinEntry" type="number" value="27" min="0" max="39" /></div>
+                <div class="field"><label for="pinExit">IR Exit GPIO</label><input id="pinExit" type="number" value="26" min="0" max="39" /></div>
+                <div class="field ultrasonic-field"><label for="pinTrig">Ultrasonic TRIG GPIO</label><input id="pinTrig" type="number" value="25" min="0" max="39" /><p class="helper">Shown only when ultrasonic is enabled.</p></div>
+              </div>
+              <div class="form-grid three" style="margin-top:14px;">
+                <div class="field ultrasonic-field"><label for="pinEcho">Ultrasonic ECHO GPIO</label><input id="pinEcho" type="number" value="34" min="0" max="39" /><p class="helper">Shown only when ultrasonic is enabled.</p></div>
+                <div class="field"><label for="irActiveMode">IR active mode</label><select id="irActiveMode"><option value="true">Active LOW - most IR modules</option><option value="false">Active HIGH</option></select></div>
+                <div class="field ultrasonic-field"><label for="occupiedDistance">Occupied distance cm</label><input id="occupiedDistance" type="number" value="90" min="5" max="400" step="1" /></div>
+              </div>
+              <div class="form-grid" style="margin-top:14px;">
+                <div class="field"><label for="cloudInterval">Cloud push interval ms</label><input id="cloudInterval" type="number" value="3000" min="2000" step="500" /><p class="helper">Use 3000–5000 ms for stable cloud updates.</p></div>
+                <div class="field"><label for="sketchFileName">Sketch file name</label><input id="sketchFileName" type="text" value="esp32_queue_device_configured" /></div>
+              </div>
+              <div class="button-row" style="margin-top:16px;"><button class="primary-btn" id="generateSketchButton" type="submit">Generate Full Reliable Arduino Code</button><button class="outline-btn" id="downloadSketchButton" type="button">Download .ino</button><button class="outline-btn" id="copyFullSketchButton" type="button">Copy Full Code</button><button class="outline-btn" id="copySketchConfigButton" type="button">Copy Settings Only</button></div>
+            </form>
+
+            <div class="single-panel-note" id="builderMessage">Generate the full reliable sketch, upload it once, then verify Wi‑Fi and cloud readings.</div>
+            <textarea id="generatedSketchPreview" readonly spellcheck="false" style="display:none; min-height:280px; margin-top:16px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px;"></textarea>
+          </div>
+        </article>
+
+        <article class="panel workspace-panel" data-device-panel="devices" hidden>
+          <div class="panel-head"><div><h3>Registered devices</h3><p>Registered devices.</p></div><button class="outline-btn" id="refreshDevicesButton" type="button">Refresh</button></div>
+          <div class="panel-body"><div class="step-list" id="deviceList"></div><div class="empty-state" id="emptyDevices">No registered ESP32 devices yet.</div></div>
+        </article>
+
+        <article class="panel workspace-panel" data-device-panel="cloud" hidden>
+          <div class="panel-head"><div><h3>Upload and verify connection</h3><p>Upload once, then verify readings.</p></div><span class="status-pill info">Final test</span></div>
+          <div class="panel-body">
+            <div class="timeline">
+              <div class="timeline-item"><div class="timeline-dot">1</div><div><h4>Generate code</h4><p>Generate the sketch.</p></div></div>
+              <div class="timeline-item"><div class="timeline-dot">2</div><div><h4>Upload with Arduino IDE</h4><p>Upload the generated full `.ino` in Arduino IDE.</p></div></div>
+              <div class="timeline-item"><div class="timeline-dot">3</div><div><h4>Watch Serial Monitor</h4><p>Look for Wi‑Fi connected and HTTP 200/201.</p></div></div>
+              <div class="timeline-item"><div class="timeline-dot">4</div><div><h4>Verify website</h4><p>Check Hub or Public Finder.</p></div></div>
+            </div>
+            <div class="single-panel-note">Serial Monitor success lines: ESP32 connected to Wi‑Fi, IP address shown, Cloud push code: 200/201, Cloud push OK.</div>
+            <div class="terminal" style="margin-top:14px;">Common Serial messages:
+Wi-Fi failed / ssid_not_found  -> wrong SSID or 5 GHz network
+connect_failed                 -> wrong password or router refused connection
+Cloud push code: 401/403       -> wrong device token or inactive device
+Cloud push code: 404           -> wrong Edge Function URL
+Cloud push code: 500           -> database/schema/function error
+Cloud push OK                  -> ESP32 reached Supabase successfully</div>
+            <div class="button-row" style="margin-top:14px;"><a class="outline-btn" href="database-setup.html">Open Database Setup</a><a class="outline-btn" href="hardware-guide.html">Open Hardware Guide</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Device Registration</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="app-config.js"></script><script src="storage-api.js"></script><script src="app-ui.js"></script><script src="device-registration.js"></script>
+</body>
+</html>

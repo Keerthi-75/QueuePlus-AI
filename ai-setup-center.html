@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Setup Center | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>AI Setup Center</p></div></a>
+    <nav class="nav-actions">
+      <a class="nav-link" href="location-manager.html">Locations</a>
+      <a class="nav-link" href="setup-survey.html">Setup Survey</a>
+      <a class="nav-link" href="device-registration.html">Device</a>
+      <a class="nav-link" href="database-setup.html">Database</a>
+      <a class="nav-link" href="service-control-hub.html">Control Hub</a>
+      <button class="outline-btn" id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot" id="cameraDot"></span> AI calibration</div>
+        <h2>Define the queue area. <span>Improve the AI count.</span></h2>
+        <p id="setupSummary">Loading workspace...</p>
+        <div class="hero-actions">
+          <button class="primary-btn" id="startPreviewButton" type="button">Start Camera Test</button>
+          <button class="outline-btn" id="stopPreviewButton" type="button">Stop Camera</button>
+          <button class="ghost-btn" id="resetZoneButton" type="button">Reset Zone</button>
+        </div>
+      </div>
+      <aside class="panel" data-reveal="right">
+        <div class="panel-head"><div><h3>AI Readiness</h3><p id="readinessNote">Complete setup.</p></div><span class="status-pill warning" id="readinessBadge">Checking</span></div>
+        <div class="panel-body">
+          <div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);">
+            <article class="metric-card"><span>Score</span><strong id="readinessScore">0%</strong><p id="readinessLabel">Waiting</p></article>
+            <article class="metric-card"><span>Mode</span><strong id="recommendedMode">Auto</strong><p>Camera + sensor when available.</p></article>
+            <article class="metric-card"><span>Zone</span><strong id="zoneState">Default</strong><p id="zoneSizeText">--</p></article>
+            <article class="metric-card"><span>Camera</span><strong id="cameraState">Offline</strong><p id="cameraQualityText">Permission needed.</p></article>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section grid-2">
+      <article class="panel">
+        <div class="panel-head"><div><h3>Queue Zone Designer</h3><p>Drag on the preview or edit the percentages.</p></div><span class="status-pill info">ROI</span></div>
+        <div class="panel-body">
+          <div class="camera-shell ai-setup-camera">
+            <video id="setupVideo" playsinline muted></video>
+            <canvas id="setupCanvas"></canvas>
+            <div class="camera-placeholder" id="setupPlaceholder"><div><h3>Camera preview</h3><p>Start the camera test to draw the queue zone.</p></div></div>
+          </div>
+          <div class="form-grid four" style="margin-top:16px;">
+            <div class="field"><label for="zoneX1">Left %</label><input id="zoneX1" type="number" min="0" max="100" value="8" /></div>
+            <div class="field"><label for="zoneY1">Top %</label><input id="zoneY1" type="number" min="0" max="100" value="22" /></div>
+            <div class="field"><label for="zoneX2">Right %</label><input id="zoneX2" type="number" min="0" max="100" value="92" /></div>
+            <div class="field"><label for="zoneY2">Bottom %</label><input id="zoneY2" type="number" min="0" max="100" value="98" /></div>
+          </div>
+          <div class="button-row" style="margin-top:16px;"><button class="primary-btn" id="saveAiSetupButton" type="button">Save AI Setup</button><a class="outline-btn" href="service-control-hub.html">Open Control Hub</a></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h3>Calibration Checklist</h3><p>Used for the readiness score.</p></div><span class="status-pill online">Setup</span></div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <label class="check-card"><div class="check-head"><strong>Camera faces the queue</strong><input id="cameraAngleOk" type="checkbox" checked /></div><p class="helper">Use front or top-diagonal placement.</p></label>
+            <label class="check-card"><div class="check-head"><strong>Lighting is clear</strong><input id="lightingOk" type="checkbox" checked /></div><p class="helper">Avoid dark areas and glare.</p></label>
+            <label class="check-card"><div class="check-head"><strong>Queue zone excludes staff area</strong><input id="zoneClean" type="checkbox" checked /></div><p class="helper">Keep counters and background outside the zone.</p></label>
+            <label class="check-card"><div class="check-head"><strong>Use ESP32 fusion when available</strong><input id="fusionPreferred" type="checkbox" checked /></div><p class="helper">Improves confidence when sensor data matches camera data.</p></label>
+          </div>
+          <div class="single-panel-note" id="setupMessage">Saved settings are used by the Service Control Hub before counting queue people.</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>AI Setup Center</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="ai-setup-center.js"></script>
+</body>
+</html>

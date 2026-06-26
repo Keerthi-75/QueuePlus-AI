@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Queue Finder | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body class="public-finder-page">
+  <header class="nav shell">
+    <a class="brand" href="index.html" aria-label="Go to homepage">
+      <img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" />
+      <div>
+        <h1>QueuePulse AI</h1><p>Public Queue Finder</p>
+      </div>
+    </a>
+    <nav class="nav-actions" aria-label="Main navigation">
+      <a class="nav-link" href="index.html">Homepage</a>
+      <a class="nav-link" href="service-partner.html">Service Partner</a>
+      <button class="outline-btn" id="refreshButton" type="button">Refresh</button>
+    </nav>
+  </header>
+
+  <main class="shell section public-finder-shell">
+    <section class="finder-hero card">
+      <div class="finder-hero-copy">
+        <div class="eyebrow"><span class="pulse-dot" id="connectionDot"></span> Live visitor view</div>
+        <h2>Check the queue before you leave.</h2>
+        <p>Search a service location, compare wait times, and choose the easiest place to visit.</p>
+      </div>
+      <div class="finder-search-panel" aria-label="Search locations">
+        <label class="finder-search-label" for="searchInput">Search location</label>
+        <div class="finder-search-row">
+          <input id="searchInput" type="search" placeholder="Search by place, city, branch, or service" autocomplete="off" />
+          <button class="primary-btn" id="clearButton" type="button">Clear</button>
+        </div>
+        <div class="finder-control-row">
+          <div class="field compact-field">
+            <label for="typeInput">Service type</label>
+            <select id="typeInput">
+              <option value="">All services</option>
+              <option>Government Office</option>
+              <option>University Office</option>
+              <option>Hospital Registration</option>
+              <option>Bank Branch</option>
+              <option>Service Counter</option>
+            </select>
+          </div>
+          <div class="field compact-field">
+            <label for="sortSelect">Sort by</label>
+            <select id="sortSelect">
+              <option value="best">Best visit option</option>
+              <option value="recent">Recently updated</option>
+              <option value="wait">Shortest wait</option>
+              <option value="name">Name</option>
+              <option value="confidence">Most reliable</option>
+            </select>
+          </div>
+        </div>
+        <div class="finder-filter-row" aria-label="Quick filters">
+          <button class="filter-btn active" id="allToggle" type="button">All</button>
+          <button class="filter-btn" id="openOnlyToggle" type="button">Open now</button>
+          <button class="filter-btn" id="fastOnlyToggle" type="button">Short wait</button>
+          <button class="filter-btn" id="freshOnlyToggle" type="button">Fresh update</button>
+          <button class="filter-btn" id="confidenceOnlyToggle" type="button">Reliable</button>
+          <button class="filter-btn" id="lowCrowdToggle" type="button">Low crowd</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="finder-summary-grid" aria-label="Result summary">
+      <article class="finder-stat-card">
+        <span>Results</span>
+        <strong id="visibleLocationsCount">0</strong>
+        <p>Matching locations</p>
+      </article>
+      <article class="finder-stat-card">
+        <span>Open now</span>
+        <strong id="openLocationsCount">0</strong>
+        <p>Available to visit</p>
+      </article>
+      <article class="finder-stat-card">
+        <span>Average wait</span>
+        <strong><span id="averageWaitTime">0</span>m</strong>
+        <p>Current results</p>
+      </article>
+      <article class="finder-stat-card highlight">
+        <span>Best match</span>
+        <strong id="bestLocationName">--</strong>
+        <p id="bestLocationWait">Waiting for results</p>
+      </article>
+    </section>
+
+    <section class="finder-layout" aria-label="Queue results">
+      <section class="finder-results-panel card">
+        <div class="finder-section-head">
+          <div>
+            <h3>Service locations</h3>
+            <p id="resultSubtitle">Choose a location to see visit details.</p>
+          </div>
+          <span class="status-pill warning" id="sourceBadge">Loading</span>
+        </div>
+        <div class="location-grid finder-location-grid" id="locationGrid"></div>
+        <div class="empty-state" id="emptyState">
+          <strong>No matching public locations.</strong><br />Try changing the search or filters.
+        </div>
+      </section>
+
+      <aside class="finder-detail-panel card" aria-label="Selected location details">
+        <div class="finder-detail-top">
+          <div>
+            <span class="helper">Selected location</span>
+            <h3 id="detailName">Select a location</h3>
+            <p id="detailAddress">Choose a result from the list.</p>
+          </div>
+          <span class="status-pill" id="detailStatusPill">--</span>
+        </div>
+
+        <div class="finder-wait-hero">
+          <div>
+            <span>Estimated wait</span>
+            <strong><span id="detailWait">--</span><small> min</small></strong>
+            <p id="detailRecommendation">Select a location to view advice.</p>
+          </div>
+          <div class="finder-mini-stack">
+            <div><span>Crowd</span><strong id="detailCrowdLevel">--</strong></div>
+            <div><span>People</span><strong id="detailPeopleCount">--</strong></div>
+          </div>
+        </div>
+
+        <div class="finder-detail-grid">
+          <article>
+            <span>Best time</span>
+            <strong id="detailBestTime">--</strong>
+          </article>
+          <article>
+            <span>Data quality</span>
+            <strong id="detailConfidence">--</strong>
+          </article>
+          <article>
+            <span>Updated</span>
+            <strong id="detailFreshness">--</strong>
+          </article>
+          <article>
+            <span>Schedule</span>
+            <strong id="detailSchedule">--</strong>
+          </article>
+        </div>
+
+        <div class="finder-note-card">
+          <span>What this means</span>
+          <p id="detailSourceNote">Public queue information will appear here after selecting a location.</p>
+        </div>
+
+        <div class="finder-note-card subtle">
+          <span>Current alert</span>
+          <p id="detailAlertText">No active alert.</p>
+        </div>
+
+        <div class="finder-share-row">
+          <div class="qr-box"><canvas id="qrCanvas" width="132" height="132" aria-label="Direct queue link QR code"></canvas><p class="helper">Direct link</p></div>
+          <div class="finder-share-actions">
+            <button class="primary-btn" id="copySummaryButton" type="button">Copy Summary</button>
+            <button class="outline-btn" id="copyLinkButton" type="button">Copy Link</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 QueuePulse AI. All rights reserved.</span>
+    <span>Public Queue Finder</span>
+  </footer>
+
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="app-config.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="public-queue-finder.js"></script>
+</body>
+</html>

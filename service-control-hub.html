@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Control Hub | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell compact-nav">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Service Control Hub</p></div></a>
+    <div class="nav-actions">
+      <a class="nav-link" href="public-queue-finder.html">Public Finder</a>
+      <button class="outline-btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="shell section">
+    <section class="control-hub-layout">
+      <aside class="control-hub-sidebar panel" data-reveal="left">
+        <div class="panel-head">
+          <div>
+            <h3>Workspace</h3>
+            <p>Use the side menu to move between setup, operations, and public view.</p>
+          </div>
+          <span class="status-pill info">Hub</span>
+        </div>
+        <div class="panel-body">
+          <div class="workspace-nav-group">
+            <span class="workspace-nav-label">Setup</span>
+            <div class="workspace-nav-list">
+              <a class="workspace-nav-link" href="location-manager.html"><span class="workspace-nav-icon">1</span><div><strong>Locations</strong><small>Manage branches and active location</small></div></a>
+              <a class="workspace-nav-link" href="setup-survey.html"><span class="workspace-nav-icon">2</span><div><strong>Setup Survey</strong><small>Service settings and schedule</small></div></a>
+              <a class="workspace-nav-link" href="ai-setup-center.html"><span class="workspace-nav-icon">3</span><div><strong>AI Setup</strong><small>Camera zone and readiness</small></div></a>
+              <a class="workspace-nav-link" href="device-registration.html"><span class="workspace-nav-icon">4</span><div><strong>Device</strong><small>Register ESP32 and generate code</small></div></a>
+              <a class="workspace-nav-link" href="database-setup.html"><span class="workspace-nav-icon">5</span><div><strong>Database</strong><small>Supabase project and cloud setup</small></div></a>
+              <a class="workspace-nav-link" href="hardware-guide.html"><span class="workspace-nav-icon">6</span><div><strong>Hardware Guide</strong><small>Wiring, upload, and testing</small></div></a>
+            </div>
+          </div>
+
+          <div class="workspace-nav-group">
+            <span class="workspace-nav-label">Operations</span>
+            <div class="workspace-nav-list">
+              <a class="workspace-nav-link active" href="service-control-hub.html" aria-current="page"><span class="workspace-nav-icon">✓</span><div><strong>Service Control Hub</strong><small>Run live queue monitoring</small></div></a>
+              <a class="workspace-nav-link" href="ai-learning-center.html"><span class="workspace-nav-icon">L</span><div><strong>AI Learning</strong><small>History and prediction accuracy</small></div></a>
+              <a class="workspace-nav-link" href="public-queue-finder.html"><span class="workspace-nav-icon">P</span><div><strong>Public Finder</strong><small>Visitor-facing queue page</small></div></a>
+            </div>
+          </div>
+
+          <div class="workspace-nav-group">
+            <span class="workspace-nav-label">Inside this page</span>
+            <div class="workspace-tabs vertical hub-side-tabs" role="tablist" aria-label="Service Control Hub sections">
+              <button class="workspace-tab active" data-hub-tab="camera" type="button">AI Vision</button>
+              <button class="workspace-tab" data-hub-tab="esp32" type="button">Sensor Fusion</button>
+              <button class="workspace-tab" data-hub-tab="prediction" type="button">Prediction</button>
+              <button class="workspace-tab" data-hub-tab="public" type="button">Publishing</button>
+              <button class="workspace-tab" data-hub-tab="logs" type="button">Diagnostics</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="control-hub-content">
+        <section class="hero-grid control-hub-hero">
+          <div class="hero-card" data-reveal>
+            <div class="eyebrow"><span class="pulse-dot warning" id="modeDot"></span> Live operations</div>
+            <h2>Run calibrated AI. <span>Publish clean queue status.</span></h2>
+            <p id="analysisSummary">Loading analysis summary...</p>
+            <div class="hero-actions"><button class="primary-btn" id="startCameraButton" type="button">Start AI Camera</button><button class="outline-btn" id="stopCameraButton" type="button">Stop Camera</button><button class="ghost-btn" id="forceSaveButton" type="button">Save Public Status</button></div>
+          </div>
+          <aside class="panel" data-reveal="right">
+            <div class="panel-head"><div><h3 id="organizationName">Service Location</h3><p id="hubSubtitle">Loading workspace...</p></div><span class="status-pill warning" id="modeLabel">Initializing</span></div>
+            <div class="panel-body">
+              <div class="metrics-grid hub-summary-grid" style="grid-template-columns:repeat(2,1fr);">
+                <article class="metric-card"><span>Final Queue</span><strong id="finalPeopleCount">0</strong><p id="dataMode">waiting</p></article>
+                <article class="metric-card"><span>Wait</span><strong><span id="estimatedWaitTime">0</span>m</strong><p id="waitBasis">Loading...</p></article>
+                <article class="metric-card"><span>Crowd</span><strong id="crowdLevel">--</strong><p id="queueDensity">--</p></article>
+                <article class="metric-card"><span>Confidence</span><strong id="predictionConfidence">--</strong><p id="sourceQuality">--</p></article>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="hub-tab-panel" data-hub-panel="camera">
+          <div class="grid-2">
+            <article class="panel">
+              <div class="panel-head"><div><h3>Live Camera AI</h3><p>Camera preview stays private.</p></div><span class="status-pill offline" id="cameraStatus">Offline</span></div>
+              <div class="panel-body">
+                <div class="field"><label for="cameraSelect">Camera Source</label><select id="cameraSelect"><option value="">Default camera</option></select></div>
+                <div class="camera-shell" style="margin-top:14px;"><video id="cameraVideo" playsinline muted></video><canvas id="overlayCanvas"></canvas><div class="scan-line"></div><div class="camera-placeholder" id="cameraPlaceholder"><div><h3>AI camera waiting</h3><p>Click Start AI Camera and allow browser camera permission.</p></div></div></div>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><div><h3>Camera-Derived Analytics</h3><p>Stable queue-zone count and movement.</p></div><span class="status-pill info" id="modelStatus">Not loaded</span></div>
+              <div class="panel-body"><div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);">
+                <article class="metric-card"><span>Stable AI Count</span><strong id="aiPeopleCount">0</strong><p>Raw: <span id="rawAICount">0</span> · Samples: <span id="aiSamples">0</span></p></article>
+                <article class="metric-card"><span>Camera Movement</span><strong id="cameraMovement">--</strong><p>Line: <span id="lineFormation">--</span></p></article>
+                <article class="metric-card"><span>Arrival Rate</span><strong><span id="arrivalRatePerHour">0</span>/h</strong><p>Camera count increases.</p></article>
+                <article class="metric-card"><span>Service Rate</span><strong><span id="serviceRatePerHour">0</span>/h</strong><p>Camera/IR service completions.</p></article>
+                <article class="metric-card"><span>Observed Service Interval</span><strong id="observedServiceInterval">--</strong><p>Minutes between service completions.</p></article>
+                <article class="metric-card"><span>Queue Trend</span><strong id="queueTrend">--</strong><p>Increasing, stable, or decreasing.</p></article>
+              </div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="hub-tab-panel" data-hub-panel="esp32" hidden>
+          <div class="grid-2">
+            <article class="panel"><div class="panel-head"><div><h3>ESP32 Cloud Sync</h3><p>Hosted-safe connection: ESP32 → Supabase → Service Control Hub.</p></div><span class="status-pill offline" id="esp32Status">Offline</span></div><div class="panel-body">
+              <div class="flow-rail">
+                <div class="flow-step"><div class="flow-index">1</div><div><strong>ESP32 pushes readings</strong><p>Serial Monitor should show Cloud push code: 200.</p></div></div>
+                <div class="flow-step"><div class="flow-index">2</div><div><strong>Supabase stores readings</strong><p>The Hub reads the latest row from device_readings.</p></div></div>
+                <div class="flow-step"><div class="flow-index">3</div><div><strong>Website updates from cloud</strong><p>No local ESP32 IP is required after hosting.</p></div></div>
+              </div>
+              <div class="button-row" style="margin-top:16px;"><button class="primary-btn" id="connectEsp32Button" type="button">Connect Cloud ESP32 Data</button><button class="outline-btn" id="disconnectEsp32Button" type="button">Disconnect</button></div>
+              <details class="single-panel-note" style="margin-top:16px;">
+                <summary><strong>Advanced local IP test</strong></summary>
+                <p class="helper" style="margin-top:10px;">Use this only on localhost/http and on the same Wi-Fi as the ESP32. Hosted HTTPS pages usually cannot call local ESP32 HTTP IPs.</p>
+                <div class="form-grid" style="margin-top:12px;"><div class="field"><label for="esp32IpInput">Optional ESP32 IP / Base URL</label><input id="esp32IpInput" placeholder="Leave empty for cloud mode" /></div><div class="field"><label for="esp32EndpointInput">Endpoint</label><input id="esp32EndpointInput" value="/api/queue-device" /></div></div>
+                <div class="button-row" style="margin-top:12px;"><button class="danger-btn" id="resetSensorButton" type="button">Reset Local Counter</button></div>
+              </details>
+            </div></article>
+            <article class="panel"><div class="panel-head"><div><h3>Sensor Metrics</h3><p>Camera and ESP32 readings are compared.</p></div><span class="status-pill info" id="sensorConfidence">Low</span></div><div class="panel-body"><div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);">
+              <article class="metric-card"><span>Sensor People</span><strong id="sensorPeopleCount">0</strong><p>Device: <span id="esp32DeviceId">--</span></p></article>
+              <article class="metric-card"><span>Entry / Exit</span><strong><span id="entryCount">0</span>/<span id="exitCount">0</span></strong><p>IR entry and service-complete counts.</p></article>
+              <article class="metric-card"><span>IR Entry</span><strong id="irEntryState">--</strong><p>IR Exit: <span id="irExitState">--</span></p></article>
+              <article class="metric-card"><span>Ultrasonic</span><strong id="distanceCm">--</strong><p>Occupancy: <span id="sensorOccupancy">--</span></p></article>
+              <article class="metric-card"><span>Sensor Flow</span><strong><span id="sensorFlowRate">0</span>/h</strong><p>Recent IR events.</p></article>
+              <article class="metric-card"><span>Sensor Alert</span><strong id="sensorAlert">None</strong><p id="deviceHealth">Waiting for devices</p></article>
+            </div></div></article>
+          </div>
+        </section>
+
+        <section class="hub-tab-panel" data-hub-panel="prediction" hidden>
+          <article class="panel"><div class="panel-head"><div><h3>Prediction Controls</h3><p>These values control wait-time calculation.</p></div><span class="status-pill info" id="syncMode">Local</span></div><div class="panel-body">
+            <div class="form-grid three">
+              <div class="field"><label for="sourceModeSelect">Analysis Source Mode</label><select id="sourceModeSelect"><option value="auto">Auto select available source</option><option value="camera">Webcam AI only</option><option value="esp32">ESP32 sensors only</option><option value="fusion">Combined camera + ESP32</option></select></div>
+              <div class="field"><label for="activeCountersInput">Active Counters</label><input id="activeCountersInput" type="number" min="1" value="2" /></div>
+              <div class="field"><label for="dailyLearningSampleCountInput">Daily Learning Samples</label><input id="dailyLearningSampleCountInput" type="number" min="7" max="8" value="8" /></div>
+              <div class="field"><label for="noWaitQueueLimitInput">No-Wait Queue Limit</label><input id="noWaitQueueLimitInput" type="number" min="1" value="8" /></div>
+              <div class="field"><label for="mediumCrowdLimitInput">Busy Queue Limit</label><input id="mediumCrowdLimitInput" type="number" min="9" value="15" /></div>
+              <div class="field"><label for="queueCapacityInput">Max Queue Capacity</label><input id="queueCapacityInput" type="number" min="5" value="30" /></div>
+              <div class="field"><label for="confidenceInput">AI Confidence Threshold</label><input id="confidenceInput" type="number" min="0.2" max="0.95" step="0.05" value="0.55" /></div>
+            </div>
+            <div class="form-grid" style="margin-top:16px;"><label class="check-card"><div class="check-head"><strong>Publish this location</strong><input id="isPublicToggle" type="checkbox" checked /></div><p class="helper">Show this location publicly.</p></label><label class="check-card"><div class="check-head"><strong>Location Open</strong><input id="isOpenToggle" type="checkbox" checked /></div><p class="helper">When enabled, AI predicts wait time. Turn off only when the location is closed.</p></label></div>
+            <div class="form-grid three" style="margin-top:16px;">
+              <label class="check-card"><div class="check-head"><strong>Schedule automation</strong><input id="scheduleEnabledToggle" type="checkbox" checked /></div><p class="helper">Use opening and closing time.</p></label>
+              <div class="field"><label for="openingTimeInput">Opening Time</label><input id="openingTimeInput" type="time" value="08:30" /></div>
+              <div class="field"><label for="closingTimeInput">Closing Time</label><input id="closingTimeInput" type="time" value="16:30" /></div>
+            </div>
+            <div class="button-row" style="margin-top:18px;"><button class="primary-btn" id="applyPredictionButton" type="button">Apply and Save Config</button></div>
+            <div class="card section-tight"><div class="card-body"><div class="form-grid"><div class="field"><label for="serviceTimeInput">Add served visitor time (minutes)</label><input id="serviceTimeInput" type="number" min="1" max="30" step="0.1" placeholder="Example: 4" /></div><div class="button-row" style="align-self:end;"><button class="outline-btn" id="addServiceTimeButton" type="button">Add Service Sample</button><button class="danger-btn" id="clearServiceTimesButton" type="button">Clear All Samples</button></div></div><p class="helper">Today samples: <strong id="serviceRecordsCount">0</strong>/<strong id="learningTargetCount">8</strong> · Learned service time: <strong id="averageServiceTime">--</strong> min</p></div></div>
+          </div></article>
+        </section>
+
+        <section class="hub-tab-panel" data-hub-panel="public" hidden>
+          <div class="grid-2"><article class="panel"><div class="panel-head"><div><h3>Public Status</h3><p>Public-safe result.</p></div><span class="status-pill warning" id="queueStatusPill">Waiting</span></div><div class="panel-body"><div class="metrics-grid" style="grid-template-columns:repeat(2,1fr);"><article class="metric-card"><span>Public State</span><strong id="publicStatusText">--</strong><p>Last updated: <span id="lastUpdated">--</span></p></article><article class="metric-card"><span>Best Visit Advice</span><strong id="bestVisitAdvice">--</strong><p id="recommendationText">Waiting for live data.</p></article><article class="metric-card"><span>Occupancy</span><strong><span id="occupancyPercent">0</span>%</strong><p>Capacity-based estimate.</p></article><article class="metric-card"><span>Readiness</span><strong id="readinessScore">0%</strong><p id="readinessText">Start devices.</p></article><article class="metric-card"><span>Schedule</span><strong id="scheduleStatusText">--</strong><p id="nextOpeningText">--</p></article><article class="metric-card"><span>Alerts</span><strong id="alertCount">0</strong><p id="primaryAlertText">No active alert.</p></article></div><div class="button-row" style="margin-top:16px;"><button class="outline-btn" id="copyStatusButton" type="button">Copy Queue JSON</button><a class="primary-btn" href="public-queue-finder.html">Open Public Finder</a></div></div></article><article class="panel"><div class="panel-head"><div><h3>Data Protection</h3><p>Private data is not shown publicly.</p></div><span class="status-pill online">Safe</span></div><div class="panel-body"><div class="flow-rail"><div class="flow-step"><div class="flow-index">✓</div><div><strong>No camera video public</strong><p>Only person counts and analytics are saved.</p></div></div><div class="flow-step"><div class="flow-index">✓</div><div><strong>No device token public</strong><p>Tokens are stored only as hashes.</p></div></div><div class="flow-step"><div class="flow-index">✓</div><div><strong>Survey controls AI</strong><p>Saved config controls every wait-time calculation.</p></div></div></div></div></article></div>
+        </section>
+
+        <section class="hub-tab-panel" data-hub-panel="logs" hidden>
+          <article class="panel"><div class="panel-head"><div><h3>Integration Logs</h3><p>System events.</p></div><button class="outline-btn" id="clearLogButton" type="button">Clear Log</button></div><div class="panel-body"><pre class="terminal" id="terminalLog">[system] Hub loading...</pre><div class="metrics-grid" style="grid-template-columns:repeat(3,1fr); margin-top:16px;"><article class="metric-card"><span>Today Avg Wait</span><strong><span id="todayAverageWait">0</span>m</strong><p>From saved queue history.</p></article><article class="metric-card"><span>Peak Hour</span><strong id="peakHourText">--</strong><p>Highest observed average wait.</p></article><article class="metric-card"><span>Best Hour</span><strong id="bestHourText">--</strong><p>Lowest observed average wait.</p></article></div></div></article>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Service Control Hub</span></footer>
+  <div class="toast-region" id="toastRegion"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app-config.js"></script>
+  <script src="queue-engine.js"></script>
+  <script src="storage-api.js"></script>
+  <script src="app-ui.js"></script>
+  <script src="browser-ai-queue.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="home.css" />
+</head>
+<body>
+  <canvas id="particleCanvas"></canvas>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+
+  <header class="navbar">
+    <div class="brand"><img class="brand-logo" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Know the crowd before you go.</p></div></div>
+    <nav class="nav-links"><a href="#portals">Portals</a><a href="#features">Features</a><a href="#flow">Flow</a><a href="#ai">AI</a></nav>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+  </header>
+
+  <main>
+    <section class="hero section">
+      <div class="hero-left reveal">
+        <div class="hero-badge"><span class="pulse-dot"></span> LIVE QUEUE STATUS</div>
+        <h2>Know the crowd <span>before you go.</span></h2>
+        <p>Check live crowd level, estimated wait time, and best visiting advice before reaching a service location.</p>
+        <div class="hero-actions"><a href="service-partner.html" class="primary-btn">Service Partner Portal</a><a href="public-queue-finder.html" class="secondary-btn">Public Queue Finder</a></div>
+        <div class="hero-stats"><div><h3 data-count="24">0</h3><p>Locations</p></div><div><h3 data-count="98">0</h3><p>Accuracy</p></div><div><h3 data-count="60">0</h3><p>Minutes Saved</p></div></div>
+      </div>
+      <div class="hero-right reveal">
+        <div class="phone-preview">
+          <div class="phone-top"></div>
+          <div class="status-card floating-card"><div><p>Live Visit Status</p><h3>Moderate Crowd</h3></div><span class="status-dot yellow"></span></div>
+          <div class="queue-card"><div class="queue-header"><h4>Municipal Office</h4><span>Open</span></div><div class="queue-meter"><div class="queue-fill"></div></div><div class="mini-grid"><div><p>Visitors</p><strong>42</strong></div><div><p>Wait</p><strong>12 min</strong></div></div><div class="ai-tip">Best time: after 2:30 PM</div></div>
+          <div class="scan-box"><div class="scan-line"></div><p>AI Queue Zone</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portals" class="section">
+      <div class="section-title reveal"><span>Portals</span><h2>Choose your access</h2><p>Separate workspace for service providers and a simple public search page for visitors.</p></div>
+      <div class="portal-grid">
+        <article class="portal-card partner-card reveal"><div class="portal-icon">🏢</div><h3>Service Partner Portal</h3><p>Register a location, calibrate AI, connect ESP32, and publish live queue status.</p><ul><li>Location Manager</li><li>Setup Survey</li><li>AI Setup Center</li><li>Device Registration</li><li>Database Setup</li><li>Service Control Hub</li><li>AI Learning Center</li></ul><a href="service-partner.html" class="portal-btn">Enter Partner Portal</a></article>
+        <article class="portal-card visitor-card reveal"><div class="portal-icon">🧭</div><h3>Public Queue Finder</h3><p>Search locations and view public-safe queue information.</p><ul><li>Live status</li><li>Estimated wait</li><li>Crowd level</li><li>Confidence</li><li>Freshness</li><li>Best visit advice</li></ul><a href="public-queue-finder.html" class="portal-btn">Open Finder</a></article>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-title reveal"><span>Features</span><h2>Built for practical queue monitoring</h2></div>
+      <div class="feature-grid">
+        <div class="feature-card reveal"><div>🎯</div><h3>Queue Zone AI</h3><p>Counts people only inside the calibrated queue area.</p></div>
+        <div class="feature-card reveal"><div>📷</div><h3>Browser Vision</h3><p>Runs webcam analysis in the Service Partner browser.</p></div>
+        <div class="feature-card reveal"><div>🔗</div><h3>Sensor Fusion</h3><p>Combines camera count with ESP32 readings.</p></div>
+        <div class="feature-card reveal"><div>⏱️</div><h3>Wait Prediction</h3><p>Uses service time, counters, trend, and history.</p></div>
+        <div class="feature-card reveal"><div>📊</div><h3>Learning History</h3><p>Finds busy hours and better visiting times.</p></div>
+        <div class="feature-card reveal"><div>🛡️</div><h3>Public-Safe Data</h3><p>Shows processed results, not video or device secrets.</p></div>
+      </div>
+    </section>
+
+    <section id="flow" class="section flow-section">
+      <div class="section-title reveal"><span>Flow</span><h2>Cleaner setup path</h2></div>
+      <div class="flow-wrapper reveal">
+        <div class="flow-column"><h3>Service Partner</h3><div class="flow-step">Login / Register</div><div class="flow-step">Create Location</div><div class="flow-step">Setup Survey</div><div class="flow-step">AI Setup Center</div><div class="flow-step">Register ESP32</div><div class="flow-step">Database Setup</div><div class="flow-step highlight">Service Control Hub</div></div>
+        <div class="flow-center"><div class="flow-main">Website</div><div class="flow-line"></div></div>
+        <div class="flow-column"><h3>Visitor</h3><div class="flow-step">Search Location</div><div class="flow-step">Check Status</div><div class="flow-step">View Wait Time</div><div class="flow-step">Check Confidence</div><div class="flow-step highlight">Choose Visit Time</div></div>
+      </div>
+    </section>
+
+    <section id="ai" class="section ai-section">
+      <div class="ai-panel reveal"><div><span>AI Structure</span><h2>Calibrate. Detect. Fuse. Predict.</h2><p>Queue-zone detection, tracking, sensor fusion, service-speed learning, and confidence scoring work together before public results are published.</p></div><div class="crowd-levels"><div class="level low">Low</div><div class="level moderate">Medium</div><div class="level high">High</div><div class="level busy">Very Busy</div></div></div>
+    </section>
+
+    <section id="benefits" class="section benefits-section">
+      <div class="section-title reveal"><span>Benefits</span><h2>Useful for providers and visitors</h2></div>
+      <div class="benefit-grid"><div class="benefit-card reveal"><h3>Service Partners</h3><ul><li>Monitor live queue load</li><li>Detect crowd growth</li><li>Use camera + ESP32 data</li><li>Publish clean public status</li></ul></div><div class="benefit-card reveal"><h3>Visitors</h3><ul><li>Check before travelling</li><li>Avoid peak hours</li><li>See wait time and confidence</li><li>Use direct queue links</li></ul></div></div>
+    </section>
+
+    <section class="section vision-section"><div class="vision-card reveal"><h2>Start monitoring queues smarter.</h2><p>Set up a location, calibrate the AI zone, and publish live queue status.</p><div class="vision-actions"><a href="service-partner.html" class="primary-btn">Start Setup</a><a href="database-setup.html" class="secondary-btn">Database Setup</a><a href="public-queue-finder.html" class="secondary-btn">View Public Finder</a></div></div></section>
+  </main>
+
+  <footer class="footer"><div><h3>QueuePulse AI</h3><p>Know the crowd before you go.</p></div><p>© 2026 QueuePulse AI. All rights reserved.</p></footer>
+  <script src="home.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Setup | QueuePulse AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/queuepulse-logo.svg" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/queuepulse-logo.svg" alt="QueuePulse AI logo" /><div><h1>QueuePulse AI</h1><p>Database Setup</p></div></a>
+    <nav class="nav-actions">
+      <a class="nav-link" href="service-partner.html">Service Partner</a>
+      <a class="nav-link" href="setup-survey.html">Setup Survey</a>
+      <a class="nav-link" href="device-registration.html">Device Registration</a>
+      <a class="nav-link" href="hardware-guide.html">Hardware Guide</a>
+      <a class="nav-link" href="service-control-hub.html">Control Hub</a>
+    </nav>
+  </header>
+
+  <main class="shell section">
+    <section class="hero-grid">
+      <div class="hero-card" data-reveal>
+        <div class="eyebrow"><span class="pulse-dot"></span> Database checklist</div>
+        <h2>Set up the database before testing ESP32 cloud connection.</h2>
+        <p>The ESP32 sends readings to a Supabase Edge Function. The function verifies the device token, calculates queue status and updates the public queue tables.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="device-registration.html">Generate ESP32 Code</a>
+          <a class="outline-btn" href="hardware-guide.html">Hardware Guide</a>
+        </div>
+      </div>
+      <aside class="panel" data-reveal="right">
+        <div class="panel-head"><div><h3>Correct order</h3><p>Do these steps exactly once per project.</p></div><span class="status-pill warning">Important</span></div>
+        <div class="panel-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot">1</div><div><h4>Create Supabase project</h4><p>Copy the project URL and anon/public key.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">2</div><div><h4>Run SQL schema</h4><p>Paste and run <code>supabase_schema.sql</code>.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">3</div><div><h4>Deploy Edge Function</h4><p>Deploy <code>device-ingest</code> with JWT verification off.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">4</div><div><h4>Update app config</h4><p>Add URL, anon key and function URL in <code>app-config.js</code>.</p></div></div>
+            <div class="timeline-item"><div class="timeline-dot">5</div><div><h4>Register device</h4><p>Create token, generate sketch, upload, then check Serial Monitor.</p></div></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>1. Create the Supabase project</h3><p>Use one project for the whole website.</p></div><span class="status-pill online">Required</span></div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="step-item"><div class="step-index">A</div><div><h4>Create project</h4><p>Open Supabase, create a new project and wait until the database is ready.</p></div></article>
+          <article class="step-item"><div class="step-index">B</div><div><h4>Copy URL</h4><p>Project Settings → Data API / API. Copy the project URL.</p></div></article>
+          <article class="step-item"><div class="step-index">C</div><div><h4>Copy anon/public key</h4><p>Use only the anon or publishable key in the website. Never put the service_role key in frontend files.</p></div></article>
+        </div>
+        <div class="terminal" style="margin-top:18px;">app-config.js:
+window.AIOT_CONFIG = {
+  storageMode: "supabase",
+  supabaseUrl: "https://YOUR_PROJECT_REF.supabase.co",
+  supabaseAnonKey: "YOUR_ANON_OR_PUBLISHABLE_KEY",
+  deviceIngestFunctionUrl: "https://YOUR_PROJECT_REF.supabase.co/functions/v1/device-ingest"
+};</div>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>2. Run the database schema</h3><p>This creates all tables, views, indexes and Row Level Security policies.</p></div><span class="status-pill info">SQL</span></div>
+      <div class="panel-body">
+        <div class="terminal">Supabase Dashboard → SQL Editor → New query
+
+1. Open supabase_schema.sql from this website folder.
+2. Copy the full file.
+3. Paste it into SQL Editor.
+4. Click Run.
+5. Confirm these tables exist:
+   profiles
+   service_partners
+   location_configs
+   service_location_surveys
+   devices
+   device_readings
+   camera_readings
+   service_time_events
+   queue_statuses
+   queue_status_history
+6. Confirm the public_queue_statuses view exists.</div>
+        <p class="helper" style="margin-top:14px;">If the SQL was already run before, it is safe to run the included schema again because it uses <code>if not exists</code> and replaces policies/views where needed.</p>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>3. Deploy the Edge Function</h3><p>The ESP32 must call the function, not the database table directly.</p></div><span class="status-pill warning">Device ingest</span></div>
+      <div class="panel-body">
+        <div class="terminal">Function folder:
+supabase/functions/device-ingest/index.ts
+
+Deploy command:
+supabase functions deploy device-ingest --no-verify-jwt</div>
+        <div class="single-panel-note" style="margin-top:14px;">JWT verification must be off for this function because the ESP32 does not log in as a Supabase user. The function uses the custom x-device-token header instead.</div>
+        <div class="terminal" style="margin-top:14px;">Function URL format:
+https://YOUR_PROJECT_REF.supabase.co/functions/v1/device-ingest</div>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>4. Configure the website</h3><p>Make the website use Supabase instead of local demo storage.</p></div><span class="status-pill online">app-config.js</span></div>
+      <div class="panel-body">
+        <div class="terminal">Open app-config.js and set:
+
+storageMode: "supabase"
+supabaseUrl: "https://YOUR_PROJECT_REF.supabase.co"
+supabaseAnonKey: "YOUR_ANON_OR_PUBLISHABLE_KEY"
+deviceIngestFunctionUrl: "https://YOUR_PROJECT_REF.supabase.co/functions/v1/device-ingest"</div>
+        <p class="helper" style="margin-top:14px;">The website uses the anon/public key for browser login and public queue reads. The Edge Function uses Supabase function secrets on the server side.</p>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>5. Register ESP32 and generate code</h3><p>The token links one physical board to one Service Partner location.</p></div><a class="outline-btn" href="device-registration.html">Open Device Registration</a></div>
+      <div class="panel-body">
+        <div class="terminal">Device Registration steps:
+1. Login as Service Partner.
+2. Complete Setup Survey.
+3. Open Device Registration.
+4. Register ESP32 device.
+5. Copy or auto-fill the generated token.
+6. Enter Wi‑Fi SSID and password exactly.
+7. Confirm function URL ends with /functions/v1/device-ingest.
+8. Keep safe default pins: 27, 26, 25, 34.
+9. Generate and download the .ino file.
+10. Upload it in Arduino IDE.
+11. Open Serial Monitor at 115200 baud.</div>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-head"><div><h3>Serial Monitor success checklist</h3><p>Use these lines to know the ESP32 is correct.</p></div><span class="status-pill online">Success</span></div>
+        <div class="panel-body">
+          <div class="terminal">ESP32 connected to Wi‑Fi.
+IP address: 192.168.x.x
+Local debug server started.
+Cloud push code: 200
+Cloud push OK. Database should update shortly.</div>
+          <p class="helper" style="margin-top:14px;">After this, open Service Control Hub or Public Queue Finder and refresh.</p>
+        </div>
+      </article>
+      <aside class="panel">
+        <div class="panel-head"><div><h3>Error decoder</h3><p>Most problems can be found from Serial Monitor.</p></div><span class="status-pill warning">Fix guide</span></div>
+        <div class="panel-body">
+          <div class="terminal">ssid_not_found      -> wrong SSID or 5 GHz network
+connect_failed      -> wrong password
+HTTP -1 / timeout    -> internet, DNS, SSL or endpoint issue
+Cloud 401 / 403      -> wrong token or inactive device
+Cloud 404            -> wrong function URL or function not deployed
+Cloud 500            -> schema/function/database error
+last_seen not update -> token or Edge Function problem
+Public page empty    -> public listing/setup approval/status problem</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>Database verification after upload</h3><p>Check these tables in this order.</p></div><span class="status-pill info">Verification</span></div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <article class="metric-card"><span>devices</span><strong>last_seen_at</strong><p>Should update after cloud push.</p></article>
+          <article class="metric-card"><span>device_readings</span><strong>new rows</strong><p>Should receive ESP32 readings.</p></article>
+          <article class="metric-card"><span>queue_statuses</span><strong>one row per location</strong><p>Final processed status.</p></article>
+          <article class="metric-card"><span>queue_status_history</span><strong>history rows</strong><p>Used for learning and best visit analysis.</p></article>
+          <article class="metric-card"><span>public_queue_statuses</span><strong>public view</strong><p>Visitor page reads this view.</p></article>
+          <article class="metric-card"><span>service_time_events</span><strong>service intervals</strong><p>Used to improve waiting time.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-head"><div><h3>Security rules</h3><p>Use these rules for a safe public model.</p></div><span class="status-pill warning">Do not skip</span></div>
+      <div class="panel-body">
+        <div class="terminal">Never expose:
+- Supabase service_role key in app-config.js
+- database password
+- generated ESP32 device token
+- Wi‑Fi password
+
+Allowed in frontend:
+- Supabase project URL
+- anon/public key
+- public queue status view
+
+Protected by Edge Function:
+- device token verification
+- device_readings insert
+- queue_statuses update
+- queue_status_history insert</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 QueuePulse AI. All rights reserved.</span><span>Database Setup</span></footer>
+  <script src="app-ui.js"></script>
+</body>
+</html>
